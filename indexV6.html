@@ -1,0 +1,75 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nested Todo App</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+  <section>
+    <header>
+      <h1>Nested Todo List App</h1>
+    </header>
+    <section id="main-section"><ul id="main-tree" class="same-row"></ul></section>
+    <footer></footer>
+  </section>
+  <script id="todo-template" type="text/x-handlebars-template">
+    {{#this}}
+      <li data-id="{{id}}">
+        <div class="same-row">
+          <button class="destroy">X</button>
+          <input class="toggle" type="checkbox" {{#if completed}}checked{{/if}}>
+          <a>•</a>
+          <label {{#if completed}}class="completed"{{/if}}>{{title}}</label>
+        </div>
+        <input id="edit" class="hidden" value="{{title}}">
+        <ul id="{{id}}">
+          <input id='subInput' class="hidden" type="text">
+        </ul>
+    </li>
+  {{/this}}
+  <li id="sub-input">
+    <div class="same-row">
+      <button class="hideVis">X</button>
+      <input class="hideVis" type="checkbox">
+      <a>•</a>
+    </div>
+    <input type="text" id="new-input" autofocus>
+  </li>
+  </script>
+  <script id="sub-todo-template" type="text/x-handlebars-template">
+    <section id="sub">
+    {{#this}}
+    <li data-id="{{id}}" class="sub-tree">
+      <div class="same-row">
+        <button class="destroy">X</button>
+        <input class="toggle" type="checkbox" {{#if completed}}checked{{/if}}>
+        <a>•</a>
+        <label {{#if completed}}class="completed"{{/if}}>{{title}}</label>
+      </div>
+      <input id="edit" class="hidden" value="{{title}}">
+      <ul id="{{id}}">
+        <input id='subInput' class="hidden" type="text">
+      </ul>
+    </li>
+  {{/this}}
+  <li id="sub-tree-input">
+    <div class="same-row">
+      <button class="hideVis">X</button>
+      <input class="hideVis" type="checkbox">
+      <a>•</a>
+    </div>
+    <input type="text" id="new-input" autofocus>
+  </li>
+  </section>
+  </script>
+  <script src="handlebars/dist/handlebars.js"></script>
+  <script src="appV8.js"></script>
+</body>
+
+
+</html>

@@ -1,0 +1,26 @@
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#main-section {
+  font-size: 28px;
+  margin-left: 30%;
+  margin-top: 15%;
+}
+
+a {
+  padding: 15px;
+}
+
+li {
+  padding: 15px;
+}
+
+input {
+
+}
+div {
+  display: block;
+}
