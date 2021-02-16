@@ -31,7 +31,6 @@ var App = {
 
   init: function() {
     this.todos = util.store('todos');
-    this.todoTemplate = Handlebars.compile(document.querySelector("#todo-template").innerHTML);
     var ul = window.ul = document.getElementById('main-tree');
     this.events();
     this.render();
@@ -40,6 +39,7 @@ var App = {
     //Here it is set to the first todo, upon init.
     this.lastActiveInput = this.todos[0].id;
   },
+  
   events: function() {
     var todoList = document.querySelector('#main-tree');
     todoList.addEventListener('click', function(e) {
@@ -73,6 +73,44 @@ var App = {
       }
     })
   },
+
+  todoTemplate: function(todo) {
+    var listItem = document.createElement('li');
+    listItem.setAttribute('data-id', todo.id)
+    var dropDown = document.createElement('div');
+    dropDown.className = "dropdown";
+    listItem.appendChild(dropDown);
+    var dropButton = document.createElement('a');
+    dropButton.className = "dropbtn";
+    dropButton.innerHTML = "•";
+    dropDown.appendChild(dropButton);
+    var dropContent = document.createElement('div');
+    dropContent.className = "dropdown-content";
+    dropDown.appendChild(dropContent);
+    var subTodo = document.createElement('a');
+    subTodo.className = "sub-todo";
+    subTodo.innerHTML = "Add Sub-Todo";
+    dropContent.appendChild(subTodo);
+    var toggle = document.createElement('a');
+    toggle.className = "toggle";
+    toggle.innerHTML = "Mark Completed";
+    dropContent.appendChild(toggle);
+    var destroy = document.createElement('a');
+    destroy.className = "destroy";
+    destroy.innerHTML = "Delete";
+    dropContent.appendChild(destroy);
+    var input = document.createElement('input');
+    input.setAttribute("value", todo.title);
+    input.setAttribute('focus-id', todo.id);
+    if (todo.completed === true) {
+    input.className = "completed";
+    }else {
+    input.className = "editing"
+    }
+    listItem.appendChild(input);
+    return listItem;
+  },
+
   render: function() {
     if (this.todos.length === 0) {
       this.todos.push({
@@ -83,10 +121,14 @@ var App = {
       })
     }
     util.store('todos', this.todos);
-    document.getElementById('main-tree').innerHTML = (this.todoTemplate(this.todos));
+    ul.replaceChildren();
+    this.todos.forEach(function(todo, index, array) {
+       ul.appendChild(this.todoTemplate(todo));
+    }, this)
     this.renderSubs(this.todos);
     this.whereToFocus();
   },
+
   renderSubs: function(obj) {
     for (var i = 0; i < obj.length; i++) {
       if (obj[i].subArray) {
@@ -96,12 +138,15 @@ var App = {
         var newUl = document.createElement('ul');
         li.appendChild(newUl);
         newUl.setAttribute('data-id', id);
-        newUl.innerHTML = (this.todoTemplate(obj[i].subArray));
+        obj[i].subArray.forEach(function(todo, index, array) {
+            newUl.appendChild(this.todoTemplate(todo));
+        }, this), 
         newUl.style.marginLeft = '2%';
         this.renderSubs(obj[i].subArray);
       }
     }
   },
+
   whereToFocus: function() {
       var selectorString = 'input' + '[focus-id=' + '"' + this.lastActiveInput +'"' + ']';
       var input = document.querySelector(selectorString);
@@ -120,6 +165,7 @@ var App = {
         input.value = val;
       }
   },
+
   //finds the index of a given element.
   getSubTodoIndex: function(obj, dataId) {
     for (var i = 0; i < obj.length; i++) {
@@ -133,6 +179,7 @@ var App = {
       }
     }
   },
+
   //Decides which array and what index to splice a new blank sub-todo.
   subPusher: function(obj, dataId) {
     for (var i = 0; i < obj.length; i++) {
@@ -155,6 +202,7 @@ var App = {
 
     App.render();
   },
+
   //retrieves data before recursion. Could probably be refactored.
   createSubTodo: function(e) {
     var closestLi = e.target.closest('li');
@@ -163,6 +211,7 @@ var App = {
 
     this.subPusher(this.todos, dataId);
   },
+
   create: function (e) {
     var input = e.target;
     var val = input.value;
@@ -176,6 +225,7 @@ var App = {
     this.createPusher(this.todos, dataId, subIndex);
     this.render();
   },
+
   //figures out which array to add a blank todo to.
   createPusher: function(obj, dataId, subIndex) {
     for (var i = 0; i < obj.length; i++) {
@@ -193,6 +243,7 @@ var App = {
       }
     }
   },
+
   toggle: function (e) {
     var closestLi = e.target.closest('li');
     var dataId = closestLi.getAttribute('data-id')
@@ -200,6 +251,7 @@ var App = {
     this.toggleRecurser(this.todos, dataId, index);
     this.render();
   },
+
   toggleRecurser: function(obj, dataId, subIndex) {
     for (var i = 0; i < obj.length; i++) {
       if (obj[i].id === dataId) {
@@ -210,6 +262,7 @@ var App = {
       }
     }
   },
+
   update: function (e) {
     var input = e.target;
     var val = input.value;
@@ -220,6 +273,7 @@ var App = {
     this.lastActiveInput = dataId;
     this.render();
   },
+
   updateRecurser: function(obj, val, dataId) {
     for (var i = 0; i < obj.length; i++) {
       if (obj[i].id === dataId) {
@@ -230,6 +284,7 @@ var App = {
       }
     }
   },
+
   destroy: function (e) {
     var closestLi = e.target.closest('li');
     var dataId = closestLi.getAttribute('data-id');
@@ -237,6 +292,7 @@ var App = {
     this.destroyRecurser(this.todos, dataId, subIndex);
     this.render();
   },
+
   destroyRecurser: function(obj, dataId, subIndex) {
     for (var i = 0; i < obj.length; i++) {
       if (obj[i].id === dataId) {
@@ -252,6 +308,6 @@ var App = {
       }
     }
   },
-//</app>
+
 }
 App.init();

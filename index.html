@@ -17,23 +17,7 @@
     <section id="main-section"><ul id="main-tree" class="same-row"></ul></section>
     <footer></footer>
   </section>
-  <script id="todo-template" type="text/x-handlebars-template">
-    {{#this}}
-      <li data-id="{{id}}">
-          <div class="dropdown">
-            <a class="dropbtn">•</a>
-              <div class="dropdown-content">
-                <a class="sub-todo">Add Sub-Todo</a>
-                <a class='toggle'>Mark Completed</a>
-                <a class="destroy">Delete</a>
-              </div>
-          </div>
-        <input value="{{title}}" focus-id="{{id}}"{{#if completed}}class="completed"{{else}}class="editing"{{/if}}>
-    </li>
-  {{/this}}
-</script>
-  <script src="handlebars/dist/handlebars.js"></script>
-  <script src="app.js"></script>
+<script src="app.js"></script>
 </body>
 
 
